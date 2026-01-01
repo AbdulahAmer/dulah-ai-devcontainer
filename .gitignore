@@ -12,6 +12,9 @@
 *.pem
 credentials.json
 
+# error logs
+error_logs/
+
 # Node.js
 node_modules/
 npm-debug.log
