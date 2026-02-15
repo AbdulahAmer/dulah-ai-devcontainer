@@ -3,9 +3,27 @@ set -euo pipefail
 
 umask 077
 
-if [ -n "${AGENT_ALLOWED_ROOT:-}" ] && [ "$(pwd)" != "$AGENT_ALLOWED_ROOT" ]; then
-  echo "Refusing init outside AGENT_ALLOWED_ROOT ($AGENT_ALLOWED_ROOT)"
-  exit 1
+cwd="$(pwd -P)"
+allowed_root="${AGENT_ALLOWED_ROOT:-}"
+
+if [ -n "$allowed_root" ]; then
+  if echo "$allowed_root" | grep -q '\${'; then
+    # Fall back when placeholder expansion did not run.
+    allowed_root="$cwd"
+  elif command -v realpath >/dev/null 2>&1; then
+    allowed_root="$(realpath -m "$allowed_root")"
+  fi
+
+  allowed_root="${allowed_root%/}"
+  export AGENT_ALLOWED_ROOT="$allowed_root"
+
+  case "${cwd}/" in
+    "${allowed_root}/"*) ;;
+    *)
+      echo "Refusing init outside AGENT_ALLOWED_ROOT ($allowed_root)"
+      exit 1
+      ;;
+  esac
 fi
 
 mkdir -p /commandhistory
