@@ -83,6 +83,9 @@ temp/
 *.tmp
 *.bak
 
+# Local devcontainer hooks
+.devcontainer/session-start.sh
+
 # Exports (if contains sensitive data)
 exports/*.json
 exports/*.csv
