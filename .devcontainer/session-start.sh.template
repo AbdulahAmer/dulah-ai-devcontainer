@@ -5,6 +5,10 @@ set -euo pipefail
 # Keep this file committed as a template, and customize
 # .devcontainer/session-start.sh (gitignored) per project.
 
+if [ -n "${AGENT_ALLOWED_ROOT:-}" ]; then
+  cd "$AGENT_ALLOWED_ROOT"
+fi
+
 # Examples:
 # npm ci
 # pip install -r requirements.txt

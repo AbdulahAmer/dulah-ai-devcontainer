@@ -1,8 +1,21 @@
 {
   "name": "${localWorkspaceFolderBasename}-ai-dev",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "remoteUser": "vscode",
+  "containerUser": "vscode",
   "updateRemoteUserUID": true,
+  "privileged": false,
+  "init": true,
+  "overrideCommand": false,
+  "userEnvProbe": "none",
+
+  "runArgs": [
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges:true",
+    "--pids-limit=512"
+  ],
 
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
@@ -23,13 +36,11 @@
   "containerEnv": {
     "HISTFILE": "/commandhistory/.zsh_history",
     "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "PYTHONDONTWRITEBYTECODE": "1"
-  },
-
-  "remoteEnv": {
-    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
-    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
-    "GEMINI_API_KEY": "${localEnv:GEMINI_API_KEY}"
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OPENAI_API_KEY": "",
+    "ANTHROPIC_API_KEY": "",
+    "GEMINI_API_KEY": "",
+    "AGENT_ALLOWED_ROOT": "/workspaces/${localWorkspaceFolderBasename}"
   },
 
   "mounts": [
@@ -37,10 +48,6 @@
     "source=${localWorkspaceFolderBasename}-codex,target=/home/vscode/.codex,type=volume",
     "source=${localWorkspaceFolderBasename}-claude,target=/home/vscode/.claude,type=volume",
     "source=${localWorkspaceFolderBasename}-gemini,target=/home/vscode/.gemini,type=volume"
-
-    // Optional host mounts:
-    // "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-    // "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
   ],
 
   "postCreateCommand": "bash .devcontainer/init-agents.sh",
@@ -50,6 +57,8 @@
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.inheritEnv": false,
+        "remote.autoForwardPorts": false,
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
       },
@@ -65,20 +74,7 @@
     }
   },
 
-  "forwardPorts": [
-    3000,
-    5173,
-    8000
-  ],
-  "portsAttributes": {
-    "3000": {
-      "label": "Web App"
-    },
-    "5173": {
-      "label": "Vite Dev Server"
-    },
-    "8000": {
-      "label": "API Server"
-    }
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
   }
 }

@@ -86,6 +86,11 @@ temp/
 # Local devcontainer hooks
 .devcontainer/session-start.sh
 
+# Local agent state in workspace (should stay untracked)
+.codex/
+.claude/
+.gemini/
+
 # Exports (if contains sensitive data)
 exports/*.json
 exports/*.csv
